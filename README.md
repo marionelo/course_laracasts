@@ -29,7 +29,7 @@ chmod -R 777 storage bootstrap
 # if you want to create models, controllers, etc, is here
 ```
 
-After that commands, just visit the nect domain `http://localhost://7777`
+After that commands, just visit the nect domain `http://localhost:7777`
 
 ## Ports
 
