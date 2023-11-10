@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+    nginx:
+        image: mariossan/my-nginx
+        container_name: "${APP_NAME}_nginx"
+        restart: ${RESTART}
+        ports:
+            - "7777:80"
+        volumes:
+            - $PWD:/var/www/html
+        links:
+            - php
+        networks:
+            - LEMP
+
+    php:
+        image: mariossan/my-php
+        container_name: "${APP_NAME}_php"
+        restart: ${RESTART}
+        volumes:
+            - $PWD:/var/www/html
+        expose:
+            - "9000"
+        networks:
+            - LEMP
+        depends_on:
+            - sredis
+            - db
+
+    db:
+        image: mariadb:10.5
+        container_name: "${APP_NAME}_db"
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_DATABASE: "${APP_NAME}"
+        restart: ${RESTART}
+        ports:
+            - "7779:3306"
+        networks:
+            - LEMP
+        volumes:
+            - $PWD/.docker/mysql:/var/lib/mysql
+
+    sredis:
+        image: redis
+        container_name: "${APP_NAME}_redis"
+        restart: ${RESTART}
+        volumes:
+            - $PWD/.docker/redis:/data
+        expose:
+            - "6379"
+        networks:
+            - LEMP
+
+networks:
+    LEMP:
