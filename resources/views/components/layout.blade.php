@@ -5,25 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Mariossan</title>
 
-    <style>
-        body{
-            background: white;
-            color: #222222;
-            max-width: 600px;
-            margin: auto;
-            font-family: sans-serif;
-        }
-        p {
-            line-height: 1.7;
-        }
-        article + article {
-            margin-top: 3rem;
-            padding-top: 3rem;
-            border-top: 1px solid #c5c5c5;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset("css/main.css") }}?{{ date("YmdHis") }}">
 </head>
 <body>
     {{ $slot }}
