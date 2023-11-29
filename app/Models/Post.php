@@ -6,28 +6,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use phpDocumentor\Reflection\Types\Self_;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class Post
 {
-
+    public function __construct(
+        public string $title,
+        public string $excerpt,
+        public string $date,
+        public string $body,
+        public string $slug
+    ){}
 
     public static function all()
     {
-        $files = File::files( resource_path( "/posts/") );
-
-        return array_map(fn($file) =>  $file->getContents(), $files);
+        // return Cache::rememberForever("post.all2", function(){
+        return collect( File::files( resource_path( "/posts/") ))
+                ->map(fn($file) => YamlFrontMatter::parseFile($file))
+                ->map(fn($document) => new Post(
+                    $document->title,
+                    $document->excerpt,
+                    $document->date,
+                    $document->body(),
+                    $document->slug
+                )
+                )->sortByDesc("date");
+        // });
     }
 
     public static function find(string $slug = '')
     {
-        if ( !file_exists( $path = resource_path( "/posts/{$slug}.html") ) ) {
-            throw new ModelNotFoundException();
-        }
-
-        return Cache::remember(
-            "posts.$slug",
-            now()->addSeconds(10),
-            fn() => file_get_contents($path)
-        );
+        return static::all()->firstWhere("slug", $slug);
     }
 }
