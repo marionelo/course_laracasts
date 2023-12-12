@@ -18,8 +18,14 @@ use Spatie\YamlFrontMatter\YamlFrontMatter;
 */
 
 Route::get('/', function () {
+
+    // Una manera de poder hacer una consulta a la base de datos de lo que se ejcuta
+    // \Illuminate\Support\Facades\DB::listen(function ($query) {
+    //     logger($query->sql);
+    // });
+
     return view('posts', [
-        'posts' => Post::all()
+        'posts' => Post::with('category')->get()
     ]);
 });
 
