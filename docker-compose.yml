@@ -40,7 +40,7 @@ services:
         networks:
             - LEMP
         volumes:
-            - $PWD/.docker/mysql:/var/lib/mysql
+            - $PWD/.docker/mysql2:/var/lib/mysql
 
     sredis:
         image: redis
