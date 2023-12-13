@@ -2,9 +2,8 @@
 
 use App\Models\Category;
 use App\Models\Post;
-use Illuminate\Support\Facades\File;
+use \App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,19 +23,32 @@ Route::get('/', function () {
     //     logger($query->sql);
     // });
 
-    return view('posts', [
-        'posts' => Post::with('category')->get()
+    //'posts' => Post::latest('published_at')->with(['category', 'author'])->get()
+    return view('posts.index', [
+        'posts' => Post::latest('published_at')->paginate(6), // porque el modelo post lo agrega como propiedad
+        'categories' => Category::all()
     ]);
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
     return view('post', [
-        'post' => $post
+        'post' => $post,
+        'categories' => Category::all()
     ]);
 });
 
 Route::get('/categories/{category:slug}', function (Category $category) {
+//        'posts' => $category->posts->load(['category', 'author'])
+    return view('posts.index', [
+        'posts' => $category->posts, // porque el modelo post lo agrega como propiedad
+        'categories' => Category::all()
+    ]);
+});
+
+Route::get('/authors/{author:username}', function (User $author) {
+        // 'posts' => $author->posts->load(['category', 'author'])
     return view('posts', [
-        'posts' => $category->posts
+        'posts' => $author->posts, // porque el modelo post lo agrega como propiedad
+        'categories' => Category::all()
     ]);
 });
